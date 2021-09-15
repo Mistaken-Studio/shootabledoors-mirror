@@ -253,7 +253,7 @@ namespace Mistaken.ShootableDoors
                                         return DoorType.EntranceDoor;
                                     default:
                                         {
-                                            switch (door.Type) 
+                                            switch (door.Type)
                                             {
                                                 case DoorType.EscapeSecondary:
                                                 case DoorType.EscapePrimary:
@@ -348,7 +348,7 @@ namespace Mistaken.ShootableDoors
 
         private void RegisterDoors(Door door, Transform transform)
         {
-            Log.Debug($"[REG DOOR] {door.Type}", PluginHandler.Instance.Config.VerbouseOutput);
+            this.Log.Debug($"[REG DOOR] {door.Type}", PluginHandler.Instance.Config.VerbouseOutput);
             Doors[transform.gameObject] = door;
             for (int i = 0; i < transform.childCount; i++)
                 this.RegisterDoors(door, transform.GetChild(i));
