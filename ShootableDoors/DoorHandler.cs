@@ -34,75 +34,16 @@ namespace Mistaken.ShootableDoors
         public override void OnEnable()
         {
             Exiled.Events.Handlers.Server.WaitingForPlayers += this.Handle(() => this.Server_WaitingForPlayers(), "WaitingForPlayers");
-            Exiled.Events.Handlers.Player.InteractingDoor += this.Handle<Exiled.Events.EventArgs.InteractingDoorEventArgs>((ev) => this.Player_InteractingDoor(ev));
-            Exiled.Events.Handlers.Server.RoundStarted += this.Handle(() => this.Server_RoundStarted(), "RoundStart");
         }
 
         /// <inheritdoc/>
         public override void OnDisable()
         {
             Exiled.Events.Handlers.Server.WaitingForPlayers -= this.Handle(() => this.Server_WaitingForPlayers(), "WaitingForPlayers");
-            Exiled.Events.Handlers.Player.InteractingDoor -= this.Handle<Exiled.Events.EventArgs.InteractingDoorEventArgs>((ev) => this.Player_InteractingDoor(ev));
-            Exiled.Events.Handlers.Server.RoundStarted -= this.Handle(() => this.Server_RoundStarted(), "RoundStart");
         }
 
         internal static readonly Dictionary<GameObject, Door> Doors = new Dictionary<GameObject, Door>();
         internal static readonly Dictionary<Door, int> DoorsPenetration = new Dictionary<Door, int>();
-
-        private Door gateA;
-        private bool ignoreGateA;
-        private Door gateB;
-        private bool ignoreGateB;
-
-        private void Server_RoundStarted()
-        {
-            this.gateA = Map.Doors.First(d => d.Type == DoorType.GateA);
-            this.gateB = Map.Doors.First(d => d.Type == DoorType.GateB);
-            this.RunCoroutine(this.DoRoundLoop(), "RoundLoop");
-        }
-
-        private IEnumerator<float> DoRoundLoop()
-        {
-            yield return Timing.WaitForSeconds(1);
-            while (Round.IsStarted)
-            {
-                yield return Timing.WaitForSeconds(1);
-                if (!this.ignoreGateA && this.gateA.IsOpen && !this.gateA.IsLocked)
-                    this.gateA.IsOpen = false;
-                if (!this.ignoreGateB && this.gateB.IsOpen && !this.gateB.IsLocked)
-                    this.gateB.IsOpen = false;
-            }
-        }
-
-        private void Player_InteractingDoor(Exiled.Events.EventArgs.InteractingDoorEventArgs ev)
-        {
-            if (!ev.IsAllowed)
-                return;
-            var type = ev.Door.Type;
-            if (type == DoorType.EscapePrimary)
-                Map.Doors.First(d => d.Type == DoorType.EscapeSecondary).IsOpen = ev.Door.IsOpen;
-            else if (type == DoorType.EscapeSecondary)
-                Map.Doors.First(d => d.Type == DoorType.EscapePrimary).IsOpen = ev.Door.IsOpen;
-            else if ((type == DoorType.GateA || type == DoorType.GateB) && !ev.Door.IsOpen)
-            {
-                if (type == DoorType.GateA)
-                    this.ignoreGateA = true;
-                else
-                    this.ignoreGateB = true;
-                ev.Door.ChangeLock(ev.Door.DoorLockType | DoorLockType.SpecialDoorFeature);
-                this.CallDelayed(
-                    15f,
-                    () =>
-                    {
-                        ev.Door.ChangeLock(ev.Door.DoorLockType & ~DoorLockType.SpecialDoorFeature);
-                        if (type == DoorType.GateA)
-                            this.ignoreGateA = false;
-                        else
-                            this.ignoreGateB = false;
-                    },
-                    "Closing Gate");
-            }
-        }
 
         private void Server_WaitingForPlayers()
         {
@@ -113,11 +54,6 @@ namespace Mistaken.ShootableDoors
                 return;
             }
 
-            if (!Map.Doors.Any(d => d.Type == DoorType.HID))
-                this.Log.Warn("[DOOR] HID door not found");
-            else
-                Map.Doors.First(d => d.Type == DoorType.HID).IgnoredDamageTypes |= DoorDamageType.Grenade;
-            this.Log.Debug("[DOOR] HID Done", PluginHandler.Instance.Config.VerbouseOutput);
             HashSet<DoorVariant> toIgnore = new HashSet<DoorVariant>();
             if (!Map.Doors.Any(d => d.Type == DoorType.CheckpointEntrance))
                 this.Log.Warn("[DOOR] CheckpointEZ door not found");
@@ -125,14 +61,7 @@ namespace Mistaken.ShootableDoors
             {
                 var checkpointEZ = Map.Doors.First(d => d.Type == DoorType.CheckpointEntrance).Base as CheckpointDoor;
                 foreach (var door in checkpointEZ._subDoors)
-                {
                     toIgnore.Add(door);
-                    if (!(door is BreakableDoor damageableDoor))
-                        continue;
-                    damageableDoor._maxHealth = 2000;
-                    damageableDoor._remainingHealth = damageableDoor._maxHealth;
-                    damageableDoor._ignoredDamageSources = DoorDamageType.Weapon | DoorDamageType.Grenade;
-                }
             }
 
             this.Log.Debug("[DOOR] CheckpointEZ Done", PluginHandler.Instance.Config.VerbouseOutput);
@@ -142,14 +71,7 @@ namespace Mistaken.ShootableDoors
             {
                 var checkpointLCZ_A = Map.Doors.First(d => d.Type == DoorType.CheckpointLczA).Base as CheckpointDoor;
                 foreach (var door in checkpointLCZ_A._subDoors)
-                {
                     toIgnore.Add(door);
-                    if (!(door is BreakableDoor damageableDoor))
-                        continue;
-                    damageableDoor._maxHealth = 1000;
-                    damageableDoor._remainingHealth = damageableDoor._maxHealth;
-                    damageableDoor._ignoredDamageSources = DoorDamageType.Weapon | DoorDamageType.Grenade;
-                }
             }
 
             this.Log.Debug("[DOOR] CheckpointA Done", PluginHandler.Instance.Config.VerbouseOutput);
@@ -160,24 +82,13 @@ namespace Mistaken.ShootableDoors
                 var checkpointLCZ_B = Map.Doors.First(d => d.Type == DoorType.CheckpointLczB).Base as CheckpointDoor;
 
                 foreach (var door in checkpointLCZ_B._subDoors)
-                {
                     toIgnore.Add(door);
-                    if (!(door is BreakableDoor damageableDoor))
-                        continue;
-                    damageableDoor._maxHealth = 1000;
-                    damageableDoor._remainingHealth = damageableDoor._maxHealth;
-                    damageableDoor._ignoredDamageSources = DoorDamageType.Weapon | DoorDamageType.Grenade;
-                }
             }
 
             this.Log.Debug("[DOOR] CheckpointB Done", PluginHandler.Instance.Config.VerbouseOutput);
 
             foreach (var door in Map.Doors.Where(d => d.Type == DoorType.Scp106Primary || d.Type == DoorType.Scp106Secondary || d.Type == DoorType.Scp106Bottom).Select(d => (d.Base as CheckpointDoor)._subDoors[0]))
-            {
                 toIgnore.Add(door);
-                if (door is BreakableDoor d)
-                    d._ignoredDamageSources |= DoorDamageType.Weapon | DoorDamageType.Grenade;
-            }
 
             this.Log.Debug("[DOOR] 106 Done", PluginHandler.Instance.Config.VerbouseOutput);
             try
@@ -193,8 +104,7 @@ namespace Mistaken.ShootableDoors
                         continue;
                     }
 
-                    // Log.Debug("Checking " + door.name);
-                    Func<DoorType> type = () =>
+                    DoorType GetDoorType()
                     {
                         switch (door.Base.name.RemoveBracketsOnEndOfName())
                         {
@@ -297,9 +207,9 @@ namespace Mistaken.ShootableDoors
                                         }
                                 }
                         }
-                    };
+                    }
 
-                    switch (type())
+                    switch (GetDoorType())
                     {
                         case DoorType.HeavyContainmentDoor:
                             door.MaxHealth = 100;
