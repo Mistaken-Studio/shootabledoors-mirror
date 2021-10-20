@@ -7,12 +7,11 @@
 using System;
 using Exiled.API.Enums;
 using Exiled.API.Features;
-using HarmonyLib;
 
 namespace Mistaken.ShootableDoors
 {
     /// <inheritdoc/>
-    public class PluginHandler : Plugin<Config>
+    internal class PluginHandler : Plugin<Config>
     {
         /// <inheritdoc/>
         public override string Author => "Mistaken Devs";
@@ -33,9 +32,6 @@ namespace Mistaken.ShootableDoors
         public override void OnEnabled()
         {
             Instance = this;
-
-            var harmony = new Harmony("mistaken.shootabledoors");
-            harmony.PatchAll();
 
             new DoorHandler(this);
 
