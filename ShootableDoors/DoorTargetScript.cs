@@ -22,6 +22,8 @@ namespace Mistaken.ShootableDoors
 
         public bool Damage(float damage, IDamageDealer src, Footprint attackerFootprint, Vector3 exactHitPos)
         {
+            damage /= 10;
+
             /*            var player = Player.Get(attackerFootprint.Hub);
                         if (Exiled.CustomItems.API.Features.CustomItem.TryGet(player.CurrentItem, out _))
                             return false;
@@ -41,7 +43,7 @@ namespace Mistaken.ShootableDoors
             set
             {
                 this.door = value;
-                this.door._maxHealth = 1000;
+                this.door._maxHealth = 100;
                 this.door._remainingHealth = this.door._maxHealth;
             }
         }
