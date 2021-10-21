@@ -4,7 +4,6 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Exiled.API.Enums;
@@ -12,14 +11,13 @@ using Exiled.API.Extensions;
 using Exiled.API.Features;
 using Interactables.Interobjects;
 using Interactables.Interobjects.DoorUtils;
-using MEC;
 using Mistaken.API.Diagnostics;
 using UnityEngine;
 
 namespace Mistaken.ShootableDoors
 {
     /// <inheritdoc/>
-    public class DoorHandler : Module
+    internal class DoorHandler : Module
     {
         /// <inheritdoc cref="Module.Module(Exiled.API.Interfaces.IPlugin{Exiled.API.Interfaces.IConfig})"/>
         public DoorHandler(PluginHandler p)
@@ -41,9 +39,6 @@ namespace Mistaken.ShootableDoors
         {
             Exiled.Events.Handlers.Server.WaitingForPlayers -= this.Handle(() => this.Server_WaitingForPlayers(), "WaitingForPlayers");
         }
-
-        internal static readonly Dictionary<GameObject, Door> Doors = new Dictionary<GameObject, Door>();
-        internal static readonly Dictionary<Door, int> DoorsPenetration = new Dictionary<Door, int>();
 
         private void Server_WaitingForPlayers()
         {
@@ -209,20 +204,19 @@ namespace Mistaken.ShootableDoors
                         }
                     }
 
+                    int armorResistance;
+
                     switch (GetDoorType())
                     {
                         case DoorType.HeavyContainmentDoor:
-                            door.MaxHealth = 100;
-                            DoorsPenetration[door] = 150;
+                            armorResistance = 150;
                             break;
                         case DoorType.EntranceDoor:
                         case DoorType.LightContainmentDoor:
-                            door.MaxHealth = 100;
-                            DoorsPenetration[door] = 120;
+                            armorResistance = 120;
                             break;
                         case DoorType.PrisonDoor:
-                            door.MaxHealth = 100;
-                            DoorsPenetration[door] = 100;
+                            armorResistance = 100;
                             break;
                         default:
                             door.IgnoredDamageTypes |= DoorDamageType.Weapon;
@@ -230,23 +224,21 @@ namespace Mistaken.ShootableDoors
                             continue;
                     }
 
-                    // Log.Debug("Updating " + door.name);
-                    (door.Base as BreakableDoor)._remainingHealth = door.MaxHealth;
+                    HashSet<GameObject> obj = new HashSet<GameObject>();
+                    foreach (var item in door.Base.gameObject.GetComponentsInChildren<Collider>())
+                        obj.Add(item.gameObject);
+
+                    foreach (var item in obj)
+                    {
+                        var doorScript = item.AddComponent<DoorTargetScript>();
+                        doorScript.ArmorResistance = armorResistance;
+                        doorScript.Door = door.Base as BreakableDoor;
+                    }
+
                     door.IgnoredDamageTypes = DoorDamageType.None;
                 }
 
                 this.Log.Debug("[DOOR] Doors done", PluginHandler.Instance.Config.VerbouseOutput);
-
-                this.Log.Debug("[DOOR] Registering Doors", PluginHandler.Instance.Config.VerbouseOutput);
-                foreach (var door in Map.Doors)
-                {
-                    if (!door.IsBreakable)
-                        continue;
-                    if ((door.IgnoredDamageTypes & DoorDamageType.Weapon) == (DoorDamageType)0)
-                        this.RegisterDoors(door, door.Base.transform);
-                }
-
-                this.Log.Debug("[DOOR] Registered Doors", PluginHandler.Instance.Config.VerbouseOutput);
             }
             catch (System.Exception ex)
             {
@@ -254,14 +246,6 @@ namespace Mistaken.ShootableDoors
                 this.Log.Error(ex.Message);
                 this.Log.Error(ex.StackTrace);
             }
-        }
-
-        private void RegisterDoors(Door door, Transform transform)
-        {
-            this.Log.Debug($"[REG DOOR] {door.Type}", PluginHandler.Instance.Config.VerbouseOutput);
-            Doors[transform.gameObject] = door;
-            for (int i = 0; i < transform.childCount; i++)
-                this.RegisterDoors(door, transform.GetChild(i));
         }
     }
 }

@@ -12,7 +12,7 @@ using HarmonyLib;
 namespace Mistaken.ShootableDoors
 {
     /// <inheritdoc/>
-    public class PluginHandler : Plugin<Config>
+    internal class PluginHandler : Plugin<Config>
     {
         /// <inheritdoc/>
         public override string Author => "Mistaken Devs";
