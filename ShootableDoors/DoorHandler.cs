@@ -12,6 +12,7 @@ using Exiled.API.Features;
 using Interactables.Interobjects;
 using Interactables.Interobjects.DoorUtils;
 using Mistaken.API.Diagnostics;
+using UnityEngine;
 
 namespace Mistaken.ShootableDoors
 {
@@ -203,17 +204,19 @@ namespace Mistaken.ShootableDoors
                         }
                     }
 
+                    int armorResistance;
+
                     switch (GetDoorType())
                     {
                         case DoorType.HeavyContainmentDoor:
-                            door.Base.gameObject.AddComponent<DoorTargetScript>().ArmorResistance = 150;
+                            armorResistance = 150;
                             break;
                         case DoorType.EntranceDoor:
                         case DoorType.LightContainmentDoor:
-                            door.Base.gameObject.AddComponent<DoorTargetScript>().ArmorResistance = 120;
+                            armorResistance = 120;
                             break;
                         case DoorType.PrisonDoor:
-                            door.Base.gameObject.AddComponent<DoorTargetScript>().ArmorResistance = 100;
+                            armorResistance = 100;
                             break;
                         default:
                             door.IgnoredDamageTypes |= DoorDamageType.Weapon;
@@ -221,8 +224,17 @@ namespace Mistaken.ShootableDoors
                             continue;
                     }
 
-                    // Log.Debug("Updating " + door.name);
-                    (door.Base as BreakableDoor)._remainingHealth = door.MaxHealth;
+                    HashSet<GameObject> obj = new HashSet<GameObject>();
+                    foreach (var item in door.Base.gameObject.GetComponentsInChildren<Collider>())
+                        obj.Add(item.gameObject);
+
+                    foreach (var item in obj)
+                    {
+                        var doorScript = item.AddComponent<DoorTargetScript>();
+                        doorScript.ArmorResistance = armorResistance;
+                        doorScript.Door = door.Base as BreakableDoor;
+                    }
+
                     door.IgnoredDamageTypes = DoorDamageType.None;
                 }
 

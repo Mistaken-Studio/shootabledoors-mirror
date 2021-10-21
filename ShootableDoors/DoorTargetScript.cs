@@ -22,25 +22,29 @@ namespace Mistaken.ShootableDoors
 
         public bool Damage(float damage, IDamageDealer src, Footprint attackerFootprint, Vector3 exactHitPos)
         {
-/*            var player = Player.Get(attackerFootprint.Hub);
-            if (Exiled.CustomItems.API.Features.CustomItem.TryGet(player.CurrentItem, out _))
-                return false;
-*/
+            /*            var player = Player.Get(attackerFootprint.Hub);
+                        if (Exiled.CustomItems.API.Features.CustomItem.TryGet(player.CurrentItem, out _))
+                            return false;
+            */
             damage = BodyArmorUtils.ProcessDamage(this.ArmorResistance, damage, Mathf.RoundToInt(src.ArmorPenetration * 100f));
 
-            this.door.ServerDamage(damage, DoorDamageType.Weapon);
+            this.Door.ServerDamage(damage, DoorDamageType.Weapon);
             Log.Debug($"[DOOR] {attackerFootprint.LoggedHubName} done {damage} damage to doors, {this.door._remainingHealth} left", PluginHandler.Instance.Config.VerbouseOutput);
             return true;
         }
 
-        public void Start()
-        {
-            this.door = this.GetComponent<BreakableDoor>();
-            this.door._maxHealth = 1000;
-            this.door._remainingHealth = this.door._maxHealth;
-        }
-
         internal int ArmorResistance { get; set; } = 100;
+
+        internal BreakableDoor Door
+        {
+            get => this.door;
+            set
+            {
+                this.door = value;
+                this.door._maxHealth = 1000;
+                this.door._remainingHealth = this.door._maxHealth;
+            }
+        }
 
         private BreakableDoor door;
     }

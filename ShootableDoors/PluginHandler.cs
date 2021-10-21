@@ -7,6 +7,7 @@
 using System;
 using Exiled.API.Enums;
 using Exiled.API.Features;
+using HarmonyLib;
 
 namespace Mistaken.ShootableDoors
 {
@@ -32,6 +33,9 @@ namespace Mistaken.ShootableDoors
         public override void OnEnabled()
         {
             Instance = this;
+
+            var harmony = new Harmony("mistaken.shootabledoors");
+            harmony.PatchAll();
 
             new DoorHandler(this);
 
