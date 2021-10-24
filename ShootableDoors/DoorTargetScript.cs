@@ -22,13 +22,7 @@ namespace Mistaken.ShootableDoors
 
         public bool Damage(float damage, IDamageDealer src, Footprint attackerFootprint, Vector3 exactHitPos)
         {
-            damage /= 10;
-
-            /*            var player = Player.Get(attackerFootprint.Hub);
-                        if (Exiled.CustomItems.API.Features.CustomItem.TryGet(player.CurrentItem, out _))
-                            return false;
-            */
-            damage = BodyArmorUtils.ProcessDamage(this.ArmorResistance, damage, Mathf.RoundToInt(src.ArmorPenetration * 100f));
+            damage = BodyArmorUtils.ProcessDamage(this.ArmorResistance, damage / 10, Mathf.RoundToInt(src.ArmorPenetration * 100f));
 
             this.Door.ServerDamage(damage, DoorDamageType.Weapon);
             Log.Debug($"[DOOR] {attackerFootprint.LoggedHubName} done {damage} damage to doors, {this.door._remainingHealth} left", PluginHandler.Instance.Config.VerbouseOutput);
