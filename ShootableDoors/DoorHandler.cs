@@ -236,6 +236,28 @@ namespace Mistaken.ShootableDoors
                     }
 
                     door.IgnoredDamageTypes = DoorDamageType.None;
+
+                    foreach (var doorButton in door.Base.gameObject.GetComponentsInChildren<RegularDoorButton>())
+                    {
+                        var buttonCollider = doorButton.GetComponent<BoxCollider>();
+                        if (buttonCollider == null)
+                            buttonCollider = doorButton.gameObject.AddComponent<BoxCollider>();
+
+                        var tmp = new GameObject("button_trigger", typeof(ButtonTargetScript), typeof(BoxCollider));
+                        tmp.transform.parent = doorButton.gameObject.transform;
+                        tmp.layer = LayerMask.NameToLayer("Hitbox");
+                        if (door.Type == Exiled.API.Enums.DoorType.HeavyContainmentDoor)
+                            tmp.transform.localPosition = Vector3.zero;
+                        else
+                            tmp.transform.localPosition = Vector3.forward * 0.15f;
+                        tmp.transform.localRotation = Quaternion.identity;
+                        tmp.transform.localScale = Vector3.one * 0.9f;
+                        var collider = tmp.GetComponent<BoxCollider>();
+                        collider.size = buttonCollider.size;
+                        var script = tmp.GetComponent<ButtonTargetScript>();
+                        script.Door = door.Base;
+                    }
+
                 }
 
                 this.Log.Debug("[DOOR] Doors done", PluginHandler.Instance.Config.VerbouseOutput);
