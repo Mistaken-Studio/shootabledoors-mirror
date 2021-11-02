@@ -31,13 +31,13 @@ namespace Mistaken.ShootableDoors
         /// <inheritdoc/>
         public override void OnEnable()
         {
-            Exiled.Events.Handlers.Server.WaitingForPlayers += this.Handle(() => this.Server_WaitingForPlayers(), "WaitingForPlayers");
+            Exiled.Events.Handlers.Server.WaitingForPlayers += this.Server_WaitingForPlayers;
         }
 
         /// <inheritdoc/>
         public override void OnDisable()
         {
-            Exiled.Events.Handlers.Server.WaitingForPlayers -= this.Handle(() => this.Server_WaitingForPlayers(), "WaitingForPlayers");
+            Exiled.Events.Handlers.Server.WaitingForPlayers -= this.Server_WaitingForPlayers;
         }
 
         private void Server_WaitingForPlayers()
@@ -230,9 +230,16 @@ namespace Mistaken.ShootableDoors
 
                     foreach (var item in obj)
                     {
-                        var doorScript = item.AddComponent<DoorTargetScript>();
-                        doorScript.ArmorResistance = armorResistance;
-                        doorScript.Door = door.Base as BreakableDoor;
+                        try
+                        {
+                            var doorScript = item.AddComponent<DoorTargetScript>();
+                            doorScript.ArmorResistance = armorResistance;
+                            doorScript.Door = door.Base as BreakableDoor;
+                        }
+                        catch (System.Exception ex)
+                        {
+                            this.Log.Error(ex);
+                        }
                     }
 
                     door.IgnoredDamageTypes = DoorDamageType.None;
@@ -257,7 +264,6 @@ namespace Mistaken.ShootableDoors
                         var script = tmp.GetComponent<ButtonTargetScript>();
                         script.Door = door.Base;
                     }
-
                 }
 
                 this.Log.Debug("[DOOR] Doors done", PluginHandler.Instance.Config.VerbouseOutput);
