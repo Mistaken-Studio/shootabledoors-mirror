@@ -29,7 +29,7 @@ namespace Mistaken.ShootableDoors
             damage = BodyArmorUtils.ProcessDamage(this.ArmorResistance, damage / 10, Mathf.RoundToInt(firearmHandler._penetration * 100f));
 
             this.Door.ServerDamage(damage, DoorDamageType.Weapon);
-            Log.Debug($"[DOOR] {firearmHandler.Attacker.LoggedHubName} done {damage} damage to doors, {this.door._remainingHealth} left", PluginHandler.Instance.Config.VerbouseOutput);
+            Log.Debug($"[DOOR] {firearmHandler.Attacker.Nickname} done {damage} damage to doors, {this.door._remainingHealth} left", PluginHandler.Instance.Config.VerbouseOutput);
             return true;
         }
 
