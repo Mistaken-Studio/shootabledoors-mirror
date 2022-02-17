@@ -24,7 +24,7 @@ namespace Mistaken.ShootableDoors
         public bool Damage(float damage, DamageHandlerBase handler, Vector3 exactHitPos)
         {
             if (!(handler is FirearmDamageHandler firearmHandler))
-                return true;
+                return false;
 
             damage = BodyArmorUtils.ProcessDamage(this.ArmorResistance, damage / 10, Mathf.RoundToInt(firearmHandler._penetration * 100f));
 

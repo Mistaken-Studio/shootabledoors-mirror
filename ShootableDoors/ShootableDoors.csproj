@@ -42,6 +42,9 @@
     <Reference Include="0Mistaken.API" HintPath="$(MISTAKEN_REFERENCES)\0Mistaken.API.dll" />
     <Reference Include="0Harmony" HintPath="$(MISTAKEN_REFERENCES)\0Harmony.dll" />
     <Reference Include="Mistaken.RoundLogger" HintPath="$(MISTAKEN_REFERENCES)\Mistaken.RoundLogger.dll" />
+    <Reference Include="NorthwoodLib">
+      <HintPath>..\..\..\..\MistakenReferences\NorthwoodLib.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEngine.CoreModule" HintPath="$(MISTAKEN_REFERENCES)\UnityEngine.CoreModule.dll" />
     <Reference Include="UnityEngine.PhysicsModule" HintPath="$(MISTAKEN_REFERENCES)\UnityEngine.PhysicsModule.dll" />
     <Reference Include="Mirror" HintPath="$(MISTAKEN_REFERENCES)\Mirror.dll" />
@@ -59,6 +62,7 @@
     <Compile Include="ButtonTargetScript.cs" />
     <Compile Include="DoorTargetScript.cs" />
     <Compile Include="DoorHandler.cs" />
+    <Compile Include="ExplodeDestructiblePatch.cs" />
     <Compile Include="PluginHandler.cs" />
     <Compile Include="Config.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
