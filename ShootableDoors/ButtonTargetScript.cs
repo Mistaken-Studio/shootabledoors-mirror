@@ -9,6 +9,7 @@ using Footprinting;
 using Interactables.Interobjects.DoorUtils;
 using InventorySystem.Items;
 using InventorySystem.Items.Armor;
+using PlayerStatsSystem;
 using UnityEngine;
 
 namespace Mistaken.ShootableDoors
@@ -19,7 +20,7 @@ namespace Mistaken.ShootableDoors
 
         public Vector3 CenterOfMass => Vector3.zero;
 
-        public bool Damage(float damage, IDamageDealer src, Footprint attackerFootprint, Vector3 exactHitPos)
+        public bool Damage(float damage, DamageHandlerBase handler, Vector3 exactHitPos)
         {
             if (!this.enabled)
                 return false;
@@ -33,8 +34,10 @@ namespace Mistaken.ShootableDoors
             if (this.Door.ActiveLocks != 0)
                 return false;*/
 
+            if (!(handler is FirearmDamageHandler firearmHandler))
+                return true;
+
             this.OnDamaged(damage / 10);
-            Log.Debug(this.health);
             return true;
         }
 

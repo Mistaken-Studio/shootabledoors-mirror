@@ -21,13 +21,13 @@ namespace Mistaken.ShootableDoors
         public override string Name => "ShootableDoors";
 
         /// <inheritdoc/>
-        public override string Prefix => "MSD";
+        public override string Prefix => "MShotableDoors";
 
         /// <inheritdoc/>
         public override PluginPriority Priority => PluginPriority.Default;
 
         /// <inheritdoc/>
-        public override Version RequiredExiledVersion => new Version(3, 0, 3);
+        public override Version RequiredExiledVersion => new Version(4, 2, 3);
 
         /// <inheritdoc/>
         public override void OnEnabled()
