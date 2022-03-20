@@ -23,6 +23,7 @@ namespace Mistaken.ShootableDoors
         public DoorHandler(PluginHandler p)
             : base(p)
         {
+            Instance = this;
         }
 
         /// <inheritdoc/>
@@ -32,13 +33,27 @@ namespace Mistaken.ShootableDoors
         public override void OnEnable()
         {
             Exiled.Events.Handlers.Server.WaitingForPlayers += this.Server_WaitingForPlayers;
+
+            foreach (var item in GameObject.FindObjectsOfType<ButtonTargetScript>())
+                item.enabled = true;
+
+            foreach (var item in GameObject.FindObjectsOfType<DoorTargetScript>())
+                item.enabled = true;
         }
 
         /// <inheritdoc/>
         public override void OnDisable()
         {
             Exiled.Events.Handlers.Server.WaitingForPlayers -= this.Server_WaitingForPlayers;
+
+            foreach (var item in GameObject.FindObjectsOfType<ButtonTargetScript>())
+                item.enabled = false;
+
+            foreach (var item in GameObject.FindObjectsOfType<DoorTargetScript>())
+                item.enabled = false;
         }
+
+        internal static DoorHandler Instance { get; private set; }
 
         private void Server_WaitingForPlayers()
         {
