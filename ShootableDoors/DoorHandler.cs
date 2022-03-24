@@ -58,38 +58,38 @@ namespace Mistaken.ShootableDoors
         private void Server_WaitingForPlayers()
         {
             this.Log.Debug("[DOOR] Starting", PluginHandler.Instance.Config.VerbouseOutput);
-            if (Map.Doors == null)
+            if (Door.List == null)
             {
                 this.Log.Warn("[DOOR] Doors not found");
                 return;
             }
 
             HashSet<DoorVariant> toIgnore = new HashSet<DoorVariant>();
-            if (!Map.Doors.Any(d => d.Type == DoorType.CheckpointEntrance))
+            if (!Door.List.Any(d => d.Type == DoorType.CheckpointEntrance))
                 this.Log.Warn("[DOOR] CheckpointEZ door not found");
             else
             {
-                var checkpointEZ = Map.Doors.First(d => d.Type == DoorType.CheckpointEntrance).Base as CheckpointDoor;
+                var checkpointEZ = Door.List.First(d => d.Type == DoorType.CheckpointEntrance).Base as CheckpointDoor;
                 foreach (var door in checkpointEZ._subDoors)
                     toIgnore.Add(door);
             }
 
             this.Log.Debug("[DOOR] CheckpointEZ Done", PluginHandler.Instance.Config.VerbouseOutput);
-            if (!Map.Doors.Any(d => d.Type == DoorType.CheckpointLczA))
+            if (!Door.List.Any(d => d.Type == DoorType.CheckpointLczA))
                 this.Log.Warn("[DOOR] CheckpointA door not found");
             else
             {
-                var checkpointLCZ_A = Map.Doors.First(d => d.Type == DoorType.CheckpointLczA).Base as CheckpointDoor;
+                var checkpointLCZ_A = Door.List.First(d => d.Type == DoorType.CheckpointLczA).Base as CheckpointDoor;
                 foreach (var door in checkpointLCZ_A._subDoors)
                     toIgnore.Add(door);
             }
 
             this.Log.Debug("[DOOR] CheckpointA Done", PluginHandler.Instance.Config.VerbouseOutput);
-            if (!Map.Doors.Any(d => d.Type == DoorType.CheckpointLczB))
+            if (!Door.List.Any(d => d.Type == DoorType.CheckpointLczB))
                 this.Log.Warn("[DOOR] CheckpointB door not found");
             else
             {
-                var checkpointLCZ_B = Map.Doors.First(d => d.Type == DoorType.CheckpointLczB).Base as CheckpointDoor;
+                var checkpointLCZ_B = Door.List.First(d => d.Type == DoorType.CheckpointLczB).Base as CheckpointDoor;
 
                 foreach (var door in checkpointLCZ_B._subDoors)
                     toIgnore.Add(door);
@@ -97,14 +97,14 @@ namespace Mistaken.ShootableDoors
 
             this.Log.Debug("[DOOR] CheckpointB Done", PluginHandler.Instance.Config.VerbouseOutput);
 
-            foreach (var door in Map.Doors.Where(d => d.Type == DoorType.Scp106Primary || d.Type == DoorType.Scp106Secondary || d.Type == DoorType.Scp106Bottom).Select(d => (d.Base as CheckpointDoor)._subDoors[0]))
+            foreach (var door in Door.List.Where(d => d.Type == DoorType.Scp106Primary || d.Type == DoorType.Scp106Secondary || d.Type == DoorType.Scp106Bottom).Select(d => (d.Base as CheckpointDoor)._subDoors[0]))
                 toIgnore.Add(door);
 
             this.Log.Debug("[DOOR] 106 Done", PluginHandler.Instance.Config.VerbouseOutput);
             try
             {
                 this.Log.Debug("[DOOR] Starting doors", PluginHandler.Instance.Config.VerbouseOutput);
-                foreach (var door in Map.Doors)
+                foreach (var door in Door.List)
                 {
                     if (!door.IsBreakable)
                         continue;
