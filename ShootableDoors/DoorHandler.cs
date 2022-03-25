@@ -32,7 +32,7 @@ namespace Mistaken.ShootableDoors
         /// <inheritdoc/>
         public override void OnEnable()
         {
-            Exiled.Events.Handlers.Server.WaitingForPlayers += this.Server_WaitingForPlayers;
+            Events.Handlers.CustomEvents.GeneratedCache += this.CustomEvents_GeneratedCache;
 
             foreach (var item in GameObject.FindObjectsOfType<ButtonTargetScript>())
                 item.enabled = true;
@@ -44,7 +44,7 @@ namespace Mistaken.ShootableDoors
         /// <inheritdoc/>
         public override void OnDisable()
         {
-            Exiled.Events.Handlers.Server.WaitingForPlayers -= this.Server_WaitingForPlayers;
+            Events.Handlers.CustomEvents.GeneratedCache -= this.CustomEvents_GeneratedCache;
 
             foreach (var item in GameObject.FindObjectsOfType<ButtonTargetScript>())
                 item.enabled = false;
@@ -55,7 +55,7 @@ namespace Mistaken.ShootableDoors
 
         internal static DoorHandler Instance { get; private set; }
 
-        private void Server_WaitingForPlayers()
+        private void CustomEvents_GeneratedCache()
         {
             this.Log.Debug("[DOOR] Starting", PluginHandler.Instance.Config.VerbouseOutput);
             if (Door.List == null)
