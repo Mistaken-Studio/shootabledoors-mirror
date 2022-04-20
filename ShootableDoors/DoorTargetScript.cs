@@ -5,10 +5,8 @@
 // -----------------------------------------------------------------------
 
 using Exiled.API.Features;
-using Footprinting;
 using Interactables.Interobjects;
 using Interactables.Interobjects.DoorUtils;
-using InventorySystem.Items;
 using InventorySystem.Items.Armor;
 using PlayerStatsSystem;
 using UnityEngine;

@@ -12,6 +12,7 @@ using InventorySystem.Items.ThrowableProjectiles;
 using NorthwoodLib.Pools;
 
 #pragma warning disable SA1118 // Parameter should not span multiple lines
+#pragma warning disable SA1402 // File may only contain a single type
 
 namespace Mistaken.ShootableDoors
 {
