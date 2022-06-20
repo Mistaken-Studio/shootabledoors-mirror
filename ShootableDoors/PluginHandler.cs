@@ -39,6 +39,13 @@ namespace Mistaken.ShootableDoors
 
             new DoorHandler(this);
 
+            if (this.Config.ShotgunDoorDamageMultiplayer < 0 || this.Config.WeaponDoorDamageMultiplayer < 0)
+            {
+                Log.Warn("ShotgunDoorDamageMultiplayer or WeaponDoorDamageMultiplayer set to a negative value!");
+                this.Config.ShotgunDoorDamageMultiplayer = 0;
+                this.Config.WeaponDoorDamageMultiplayer = 0;
+            }
+
             API.Diagnostics.Module.OnEnable(this);
 
             base.OnEnabled();

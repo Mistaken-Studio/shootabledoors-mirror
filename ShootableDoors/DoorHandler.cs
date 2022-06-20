@@ -184,15 +184,13 @@ namespace Mistaken.ShootableDoors
                                                     return DoorType.HeavyContainmentDoor;
                                                 case DoorType.LczArmory:
                                                     return DoorType.LightContainmentDoor;
-                                                case DoorType.Scp012:
-                                                    return DoorType.HeavyContainmentDoor;
                                                 case DoorType.HczArmory:
                                                     return DoorType.HeavyContainmentDoor;
                                                 case DoorType.Scp096:
                                                     return DoorType.HeavyContainmentDoor;
                                                 case DoorType.Scp049Armory:
                                                     return DoorType.HeavyContainmentDoor;
-                                                case DoorType.Scp012Locker:
+                                                case DoorType.Scp330:
                                                     return DoorType.LightContainmentDoor;
                                                 case DoorType.ServersBottom:
                                                     return DoorType.HeavyContainmentDoor;
@@ -203,7 +201,7 @@ namespace Mistaken.ShootableDoors
                                                 case DoorType.HIDLeft:
                                                 case DoorType.HIDRight:
                                                     return DoorType.HeavyContainmentDoor;
-                                                case DoorType.Scp012Bottom:
+                                                case DoorType.Scp330Chamber:
                                                     return DoorType.LightContainmentDoor;
                                                 case DoorType.Scp173Armory:
                                                     return DoorType.LightContainmentDoor;

@@ -24,7 +24,8 @@ namespace Mistaken.ShootableDoors
             if (!(handler is FirearmDamageHandler firearmHandler))
                 return false;
 
-            damage = BodyArmorUtils.ProcessDamage(this.ArmorResistance, damage / 10, Mathf.RoundToInt(firearmHandler._penetration * 100f));
+            damage = firearmHandler.WeaponType == ItemType.GunShotgun ? damage * PluginHandler.Instance.Config.ShotgunDoorDamageMultiplayer : damage * PluginHandler.Instance.Config.WeaponDoorDamageMultiplayer;
+            damage = BodyArmorUtils.ProcessDamage(this.ArmorResistance, damage, Mathf.RoundToInt(firearmHandler._penetration * 100f));
 
             this.Door.ServerDamage(damage, DoorDamageType.Weapon);
             Log.Debug($"[DOOR] {firearmHandler.Attacker.Nickname} done {damage} damage to doors, {this.door._remainingHealth} left", PluginHandler.Instance.Config.VerbouseOutput);
